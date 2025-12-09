@@ -67,19 +67,27 @@ class BookDao(Dao[Book]):
         :param obj: object already updated in memory
         :return: True if the update could be performed
         """
+        if obj.book_id is None or obj.book_id <= 0:
+            return False
+        
         with Dao.connection.cursor() as cursor:
-            sql = """
-                    UPDATE book
-                    SET title=%s, summary=%s, characters=%s, parution_date=%s,
-                        pages=%s, isbn=%s, price=%s, author_id=%s, editor_id=%s
-                    WHERE book_id=%s
-                  """
-            cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
-                                 obj.pages, obj.isbn, obj.price,
-                                 obj.author.author_id if obj.author else None,
-                                 obj.editor.editor_id if obj.editor else None,
-                                 obj.book_id))
-            Dao.connection.commit()
+            try:
+                sql = """
+                        UPDATE book
+                        SET title=%s, summary=%s, characters=%s, parution_date=%s,
+                            pages=%s, isbn=%s, price=%s, author_id=%s, editor_id=%s
+                        WHERE book_id=%s
+                    """
+                cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
+                                    obj.pages, obj.isbn, obj.price,
+                                    obj.author.author_id if obj.author else None,
+                                    obj.editor.editor_id if obj.editor else None,
+                                    obj.book_id))
+                Dao.connection.commit()
+
+            except pymysql.MySQLError as e:
+                print(f"Error updating book: {e}")
+                return False
 
             return cursor.rowcount > 0
         
@@ -95,3 +103,5 @@ class BookDao(Dao[Book]):
             Dao.connection.commit()
 
             return cursor.rowcount > 0
+        
+        print()
