@@ -58,3 +58,16 @@ class AuthorDao(Dao[Author]):
             Dao.connection.commit()
 
             return cursor.rowcount > 0
+        
+    def delete(self, obj: Author) -> bool:
+        """Deletes the DB entity corresponding to obj
+
+        :param obj: object whose corresponding entity is to be deleted
+        :return: True if the deletion could be performed
+        """
+        with Dao.connection.cursor() as cursor:
+            sql = "DELETE FROM author WHERE author_id=%s"
+            cursor.execute(sql, (obj.author_id,))
+            Dao.connection.commit()
+
+            return cursor.rowcount > 0
