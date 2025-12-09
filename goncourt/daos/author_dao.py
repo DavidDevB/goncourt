@@ -18,7 +18,7 @@ class AuthorDao(Dao[Author]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "INSERT INTO author (first_name, last_name, biography) VALUES (%s, %s, %s)"
+                sql = "INSERT INTO authors (first_name, last_name, biography) VALUES (%s, %s, %s)"
                 cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography))
                 Dao.connection.commit()
 
@@ -37,7 +37,7 @@ class AuthorDao(Dao[Author]):
         author: Optional[Author]
 
         with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT * FROM author WHERE author_id=%s"
+            sql = "SELECT * FROM authors WHERE author_id=%s"
             cursor.execute(sql, (id_entity,))
             record = cursor.fetchone()
         if record is not None:
@@ -59,7 +59,7 @@ class AuthorDao(Dao[Author]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "UPDATE author SET first_name=%s, last_name=%s, biography=%s WHERE author_id=%s"
+                sql = "UPDATE authors SET first_name=%s, last_name=%s, biography=%s WHERE author_id=%s"
                 cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography, obj.author_id))
                 Dao.connection.commit()
 
@@ -77,7 +77,7 @@ class AuthorDao(Dao[Author]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "DELETE FROM author WHERE author_id=%s"
+                sql = "DELETE FROM authors WHERE author_id=%s"
                 cursor.execute(sql, (obj.author_id,))
                 Dao.connection.commit()
                 

@@ -8,9 +8,9 @@ class Editor:
     Represents the editor and his data :
     - name : editor's name
     """
-    editor_id: Optional[int] = field(default=None, init=False)
     name: str
+    editor_id: Optional[int] = field(default=None, init=False)
 
-    def get_name(self) -> str:
-        """Returns the editor's name."""
-        return self.name
+    def __str__(self) -> str:
+        """String representation of the editor."""
+        return f"{self.name}"

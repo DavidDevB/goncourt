@@ -19,7 +19,7 @@ class EditorDao(Dao[Editor]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "INSERT INTO editor (name, address) VALUES (%s)"
+                sql = "INSERT INTO editors (name, address) VALUES (%s)"
                 cursor.execute(sql, (obj.name,))
                 Dao.connection.commit()
 
@@ -38,7 +38,7 @@ class EditorDao(Dao[Editor]):
         editor: Optional[Editor]
 
         with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT * FROM editor WHERE editor_id=%s"
+            sql = "SELECT * FROM editors WHERE editor_id=%s"
             cursor.execute(sql, (id_entity,))
             record = cursor.fetchone()
         if record is not None:
@@ -58,7 +58,7 @@ class EditorDao(Dao[Editor]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "UPDATE editor SET name=%s WHERE editor_id=%s"
+                sql = "UPDATE editors SET name=%s WHERE editor_id=%s"
                 cursor.execute(sql, (obj.name, obj.editor_id))
                 Dao.connection.commit()
 
@@ -76,7 +76,7 @@ class EditorDao(Dao[Editor]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "DELETE FROM editor WHERE editor_id=%s"
+                sql = "DELETE FROM editors WHERE editor_id=%s"
                 cursor.execute(sql, (obj.editor_id,))
                 Dao.connection.commit()
                 

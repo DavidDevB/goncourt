@@ -11,14 +11,11 @@ class Author:
     - last_name  : author's last name
     - biography  : author's biography
     """
-    author_id: Optional[int] = field(default=None, init=False)
     first_name: str
     last_name: str
     biography: str
+    author_id: Optional[int] = field(default=None, init=False)
 
-    def get_full_name(self) -> str:
-        """Returns the complete name of the author."""
-        return f"{self.first_name} {self.last_name}"
     
     def __str__(self) -> str:
-        return self.get_full_name()
+        return f"{self.first_name} {self.last_name}"

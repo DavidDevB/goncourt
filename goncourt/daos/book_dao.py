@@ -1,6 +1,8 @@
 
 from dataclasses import dataclass
 from models.book import Book
+from models.author import Author
+from models.editor import Editor
 from daos.dao import Dao
 from typing import Optional
 import pymysql.cursors
@@ -17,7 +19,7 @@ class BookDao(Dao[Book]):
         with Dao.connection.cursor() as cursor:
             try:
                 sql = """
-                        INSERT INTO book (title, summary, characters, parution_date, pages, isbn, price, author_id, editor_id)
+                        INSERT INTO books (title, summary, characters, parution_date, pages, isbn, price, author_id, editor_id)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     """
                 cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
@@ -43,10 +45,43 @@ class BookDao(Dao[Book]):
         book: Optional[Book]
 
         with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT * FROM book WHERE book_id=%s"
+            sql = """
+            SELECT 
+                b.book_id, 
+                b.title, 
+                b.summary, 
+                b.characters, 
+                b.parution_date, 
+                b.pages, 
+                b.isbn, 
+                b.price,
+                a.author_id,
+                a.first_name AS author_first_name,
+                a.last_name AS author_last_name,
+                a.biography AS author_biography,
+                e.editor_id,
+                e.name AS editor_name
+            FROM books b
+            INNER JOIN authors a ON b.fk_author_id = a.author_id
+            INNER JOIN editors e ON b.fk_editor_id = e.editor_id
+            WHERE b.book_id=%s
+        """
             cursor.execute(sql, (id_entity,))
             record = cursor.fetchone()
         if record is not None:
+
+            author = Author(
+                first_name=record["author_first_name"],
+                last_name=record["author_last_name"],
+                biography=record["author_biography"],
+            )
+            author.author_id = record['author_id']
+
+            editor = Editor(
+                name=record["editor_name"]
+            )
+            editor.editor_id = record['editor_id']
+
             book = Book(
                 title=record["title"],
                 summary=record["summary"],
@@ -55,8 +90,8 @@ class BookDao(Dao[Book]):
                 pages=record["pages"],
                 isbn=record["isbn"],
                 price=record["price"],
-                author=record["author_id"],
-                editor=record["editor_id"],
+                author=author,
+                editor=editor,
                 selection=None,
                 voices=None,
             )
@@ -71,11 +106,44 @@ class BookDao(Dao[Book]):
         books: list[Book] = []
 
         with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT * FROM book"
+            sql = """
+            SELECT 
+                b.book_id, 
+                b.title, 
+                b.summary, 
+                b.characters, 
+                b.parution_date, 
+                b.pages, 
+                b.isbn, 
+                b.price,
+                a.author_id,
+                a.first_name AS author_first_name,
+                a.last_name AS author_last_name,
+                a.biography AS author_biography,
+                e.editor_id,
+                e.name AS editor_name
+            FROM books b
+            INNER JOIN authors a ON b.fk_author_id = a.author_id
+            INNER JOIN editors e ON b.fk_editor_id = e.editor_id
+        """
+
             cursor.execute(sql)
             records = cursor.fetchall()
 
         for record in records:
+
+            author = Author(
+                first_name=record["author_first_name"],
+                last_name=record["author_last_name"],
+                biography=record["author_biography"],
+            )
+            author.author_id = record['author_id']
+
+            editor = Editor(
+                name=record["editor_name"]
+            )
+            editor.editor_id = record['editor_id']
+
             book = Book(
                 title=record["title"],
                 summary=record["summary"],
@@ -84,8 +152,8 @@ class BookDao(Dao[Book]):
                 pages=record["pages"],
                 isbn=record["isbn"],
                 price=record["price"],
-                author=record["author_id"],
-                editor=record["editor_id"],
+                author=author,
+                editor=editor,
                 selection=None,
                 voices=None,
             )
@@ -106,7 +174,7 @@ class BookDao(Dao[Book]):
         with Dao.connection.cursor() as cursor:
             try:
                 sql = """
-                        UPDATE book
+                        UPDATE books
                         SET title=%s, summary=%s, characters=%s, parution_date=%s,
                             pages=%s, isbn=%s, price=%s, author_id=%s, editor_id=%s
                         WHERE book_id=%s
@@ -132,7 +200,7 @@ class BookDao(Dao[Book]):
         """
         with Dao.connection.cursor() as cursor:
             try:
-                sql = "DELETE FROM book WHERE book_id=%s"
+                sql = "DELETE FROM books WHERE book_id=%s"
                 cursor.execute(sql, (obj.book_id,))
                 Dao.connection.commit()
                 

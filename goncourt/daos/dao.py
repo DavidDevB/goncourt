@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, Optional
 import pymysql.cursors
 from typing import TypeVar, Union
+from goncourt.models.book import Book
 
 
 @dataclass
@@ -30,7 +31,7 @@ class Dao[T](ABC):
         ...
 
     @abstractmethod
-    def read(self, id_entity: int) -> Optional[T]:
+    def read(self, id_entity: int, book: Optional[Book]) -> Optional[T]:
         """Returns the object corresponding to the entity whose id is id_entity
            (or None if it could not be found)"""
         ...

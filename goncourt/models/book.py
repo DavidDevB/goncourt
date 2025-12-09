@@ -27,7 +27,6 @@ class Book():
     - selection     : selection number of the book
     - voices        : number of voices for the book
     """
-    book_id: Optional[int] = field(default=None, init=False)
     title: str
     summary: str
     characters: str
@@ -37,8 +36,9 @@ class Book():
     price: int
     author: Author
     editor: Editor
-    selection: Optional[int]
+    selection: Optional[str]
     voices: Optional[int]
+    book_id: Optional[int] = field(default=None, init=False)
 
     def set_author(self, author: Author) -> None:
         """Sets the author of the book."""
@@ -47,6 +47,14 @@ class Book():
     def set_editor(self, editor: Editor) -> None:
         """Sets the editor of the book."""
         self.editor = editor
+
+    def set_selection(self, selection: str) -> None:
+        """Sets the selection number of the book."""
+        self.selection = selection
+
+    def set_voices(self, voices: int) -> None:
+        """Sets the number of voices for the book."""
+        self.voices = voices
 
     def get_author(self) -> Author:
         """Returns the book's author."""
@@ -57,5 +65,7 @@ class Book():
         return self.editor
     
     def __str__(self) -> str:
-        return f"{self.title} by {self.author}, published by {self.editor} on {self.parution_date}"
+        return (f"{self.title} by {self.author}, published by {self.editor} on {self.parution_date}.\n"
+               f"Summary: {self.summary}\nCharacters: {self.characters}\nPages: {self.pages}, ISBN: {self.isbn}, Price: {self.price}€\n"
+               )
 
