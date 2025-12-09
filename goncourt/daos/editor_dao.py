@@ -18,10 +18,15 @@ class EditorDao(Dao[Editor]):
         :return: the id of the entity inserted in the DB (0 if the creation failed).
         """
         with Dao.connection.cursor() as cursor:
-            sql = "INSERT INTO editor (name, address) VALUES (%s)"
-            cursor.execute(sql, (obj.name,))
-            Dao.connection.commit()
+            try:
+                sql = "INSERT INTO editor (name, address) VALUES (%s)"
+                cursor.execute(sql, (obj.name,))
+                Dao.connection.commit()
 
+            except pymysql.MySQLError as e:
+                print(f"Error creating editor: {e}")
+                return 0
+            
             if cursor.rowcount > 0:
                 return cursor.lastrowid
             else:
@@ -52,10 +57,15 @@ class EditorDao(Dao[Editor]):
         :return: True if the update could be performed
         """
         with Dao.connection.cursor() as cursor:
-            sql = "UPDATE editor SET name=%s WHERE editor_id=%s"
-            cursor.execute(sql, (obj.name, obj.editor_id))
-            Dao.connection.commit()
+            try:
+                sql = "UPDATE editor SET name=%s WHERE editor_id=%s"
+                cursor.execute(sql, (obj.name, obj.editor_id))
+                Dao.connection.commit()
 
+            except pymysql.MySQLError as e:
+                print(f"Error updating editor: {e}")
+                return False
+            
             return cursor.rowcount > 0
         
     def delete(self, obj: Editor) -> bool:
@@ -65,8 +75,13 @@ class EditorDao(Dao[Editor]):
         :return: True if the deletion could be performed
         """
         with Dao.connection.cursor() as cursor:
-            sql = "DELETE FROM editor WHERE editor_id=%s"
-            cursor.execute(sql, (obj.editor_id,))
-            Dao.connection.commit()
+            try:
+                sql = "DELETE FROM editor WHERE editor_id=%s"
+                cursor.execute(sql, (obj.editor_id,))
+                Dao.connection.commit()
+                
+            except pymysql.MySQLError as e:
+                print(f"Error deleting editor: {e}")
+                return False
 
             return cursor.rowcount > 0
