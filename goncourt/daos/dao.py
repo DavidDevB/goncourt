@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from typing import ClassVar, Optional
 import pymysql.cursors
+from typing import TypeVar, Union
 
 
 @dataclass
