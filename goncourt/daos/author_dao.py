@@ -17,10 +17,15 @@ class AuthorDao(Dao[Author]):
         :return: the id of the entity inserted in the DB (0 if the creation failed).
         """
         with Dao.connection.cursor() as cursor:
-            sql = "INSERT INTO author (first_name, last_name, biography) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography))
-            Dao.connection.commit()
+            try:
+                sql = "INSERT INTO author (first_name, last_name, biography) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography))
+                Dao.connection.commit()
 
+            except pymysql.MySQLError as e:
+                print(f"Error creating author: {e}")
+                return 0
+            
             if cursor.rowcount > 0:
                 return cursor.lastrowid
             else:
@@ -53,10 +58,15 @@ class AuthorDao(Dao[Author]):
         :return: True if the update could be performed
         """
         with Dao.connection.cursor() as cursor:
-            sql = "UPDATE author SET first_name=%s, last_name=%s, biography=%s WHERE author_id=%s"
-            cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography, obj.author_id))
-            Dao.connection.commit()
+            try:
+                sql = "UPDATE author SET first_name=%s, last_name=%s, biography=%s WHERE author_id=%s"
+                cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography, obj.author_id))
+                Dao.connection.commit()
 
+            except pymysql.MySQLError as e:
+                print(f"Error updating author: {e}")
+                return False
+            
             return cursor.rowcount > 0
         
     def delete(self, obj: Author) -> bool:
@@ -66,8 +76,13 @@ class AuthorDao(Dao[Author]):
         :return: True if the deletion could be performed
         """
         with Dao.connection.cursor() as cursor:
-            sql = "DELETE FROM author WHERE author_id=%s"
-            cursor.execute(sql, (obj.author_id,))
-            Dao.connection.commit()
-
+            try:
+                sql = "DELETE FROM author WHERE author_id=%s"
+                cursor.execute(sql, (obj.author_id,))
+                Dao.connection.commit()
+                
+            except pymysql.MySQLError as e:
+                print(f"Error deleting author: {e}")
+                return False
+            
             return cursor.rowcount > 0
