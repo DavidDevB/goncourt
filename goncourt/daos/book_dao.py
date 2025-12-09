@@ -59,3 +59,38 @@ class BookDao(Dao[Book]):
             book = None
 
         return book
+    
+    def update(self, obj: Book) -> bool:
+        """Updates the DB entity corresponding to obj, to match it
+
+        :param obj: object already updated in memory
+        :return: True if the update could be performed
+        """
+        with Dao.connection.cursor() as cursor:
+            sql = """
+                    UPDATE book
+                    SET title=%s, summary=%s, characters=%s, parution_date=%s,
+                        pages=%s, isbn=%s, price=%s, author_id=%s, editor_id=%s
+                    WHERE book_id=%s
+                  """
+            cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
+                                 obj.pages, obj.isbn, obj.price,
+                                 obj.author.author_id if obj.author else None,
+                                 obj.editor.editor_id if obj.editor else None,
+                                 obj.book_id))
+            Dao.connection.commit()
+
+            return cursor.rowcount > 0
+        
+    def delete(self, obj: Book) -> bool:
+        """Deletes the DB entity corresponding to obj
+
+        :param obj: object whose corresponding entity is to be deleted
+        :return: True if the deletion could be performed
+        """
+        with Dao.connection.cursor() as cursor:
+            sql = "DELETE FROM book WHERE book_id=%s"
+            cursor.execute(sql, (obj.book_id,))
+            Dao.connection.commit()
+
+            return cursor.rowcount > 0
