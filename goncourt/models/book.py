@@ -1,0 +1,50 @@
+
+"""
+Class Book
+"""
+
+
+from dataclasses import dataclass, field
+from .author import Author
+from .editor import Editor
+from typing import Optional
+
+
+@dataclass
+class Book():
+    """
+    Represents a book and his data :
+    - book_id       : primary key of the persistent entity
+    - title         : title of the book
+    - summary       : summary of the book
+    - characters    : main characters of the book
+    - parution_date : date of parution of the book
+    - pages         : number of pages of the book
+    - isbn          : isbn number of the book
+    - price         : price of the book
+    - author        : author of the book
+    - editor        : editor of the book
+    - selection     : selection number of the book
+    - voices        : number of voices for the book
+    """
+    book_id: Optional[int] = field(default=None, init=False)
+    title: str
+    summary: str
+    characters: str
+    parution_date: str
+    pages: int
+    isbn: int
+    price: int
+    author: Author
+    editor: Editor
+    selection: Optional[int]
+    voices: Optional[int]
+
+    def get_author(self) -> Author:
+        """Returns the book's author."""
+        return self.author
+    
+    def get_editor(self) -> Editor:
+        """Returns the book's editor."""
+        return self.editor
+
