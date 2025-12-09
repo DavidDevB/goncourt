@@ -45,3 +45,16 @@ class AuthorDao(Dao[Author]):
         else:
             author = None
         return author
+    
+    def update(self, obj: Author) -> bool:
+        """Updates the DB entity corresponding to obj, to match it
+
+        :param obj: object already updated in memory
+        :return: True if the update could be performed
+        """
+        with Dao.connection.cursor() as cursor:
+            sql = "UPDATE author SET first_name=%s, last_name=%s, biography=%s WHERE author_id=%s"
+            cursor.execute(sql, (obj.first_name, obj.last_name, obj.biography, obj.author_id))
+            Dao.connection.commit()
+
+            return cursor.rowcount > 0
