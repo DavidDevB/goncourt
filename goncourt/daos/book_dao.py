@@ -103,8 +103,13 @@ class BookDao(Dao[Book]):
         :return: True if the deletion could be performed
         """
         with Dao.connection.cursor() as cursor:
-            sql = "DELETE FROM book WHERE book_id=%s"
-            cursor.execute(sql, (obj.book_id,))
-            Dao.connection.commit()
-
+            try:
+                sql = "DELETE FROM book WHERE book_id=%s"
+                cursor.execute(sql, (obj.book_id,))
+                Dao.connection.commit()
+                
+            except pymysql.MySQLError as e:
+                print(f"Error deleting book: {e}")
+                return False
+            
             return cursor.rowcount > 0
