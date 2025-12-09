@@ -29,4 +29,19 @@ class AuthorDao(Dao[Author]):
     def read(self, id_entity: int) -> Optional[Author]:
         """Returns the object corresponding to the entity whose id is id_entity
            (or None if it could not be found)"""
-    
+        author: Optional[Author]
+
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = "SELECT * FROM author WHERE author_id=%s"
+            cursor.execute(sql, (id_entity,))
+            record = cursor.fetchone()
+        if record is not None:
+            author = Author(
+                first_name=record["first_name"],
+                last_name=record["last_name"],
+                biography=record["biography"],
+            )
+            author.author_id = record['author_id']
+        else:
+            author = None
+        return author
