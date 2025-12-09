@@ -15,17 +15,22 @@ class BookDao(Dao[Book]):
         :return: the id of the entity inserted in the DB (0 if the creation failed).
         """
         with Dao.connection.cursor() as cursor:
-            sql = """
-                    INSERT INTO book (title, summary, characters, parution_date, pages, isbn, price, author_id, editor_id)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                  """
-            cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
-                                 obj.pages, obj.isbn, obj.price,
-                                 obj.author.author_id if obj.author else None,
-                                 obj.editor.editor_id if obj.editor else None,
-                                 ))
+            try:
+                sql = """
+                        INSERT INTO book (title, summary, characters, parution_date, pages, isbn, price, author_id, editor_id)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """
+                cursor.execute(sql, (obj.title, obj.summary, obj.characters, obj.parution_date,
+                                    obj.pages, obj.isbn, obj.price,
+                                    obj.author.author_id if obj.author else None,
+                                    obj.editor.editor_id if obj.editor else None,
+                                    ))
 
-            Dao.connection.commit()
+                Dao.connection.commit()
+
+            except pymysql.MySQLError as e:
+                print(f"Error creating book: {e}")
+                return 0 
 
             if cursor.rowcount > 0:
                 return cursor.lastrowid
@@ -103,5 +108,3 @@ class BookDao(Dao[Book]):
             Dao.connection.commit()
 
             return cursor.rowcount > 0
-        
-        print()
