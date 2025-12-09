@@ -7,6 +7,7 @@ import pymysql.cursors
 
 @dataclass
 class BookDao(Dao[Book]):
+    """DAO for Book entities"""
     def create(self, obj: Book) -> int:
         """Creates the entity in the DB corresponding to the object book
 
