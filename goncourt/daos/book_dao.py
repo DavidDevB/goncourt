@@ -66,6 +66,34 @@ class BookDao(Dao[Book]):
 
         return book
     
+    def read_all(self) -> list[Book]:
+        """ Returns all books from the database """
+        books: list[Book] = []
+
+        with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = "SELECT * FROM book"
+            cursor.execute(sql)
+            records = cursor.fetchall()
+
+        for record in records:
+            book = Book(
+                title=record["title"],
+                summary=record["summary"],
+                characters=record["characters"],
+                parution_date=record["parution_date"],
+                pages=record["pages"],
+                isbn=record["isbn"],
+                price=record["price"],
+                author=record["author_id"],
+                editor=record["editor_id"],
+                selection=None,
+                voices=None,
+            )
+            book.book_id = record['book_id']
+            books.append(book)
+
+        return books
+    
     def update(self, obj: Book) -> bool:
         """Updates the DB entity corresponding to obj, to match it
 
