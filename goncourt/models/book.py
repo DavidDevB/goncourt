@@ -55,4 +55,7 @@ class Book():
     def get_editor(self) -> Editor:
         """Returns the book's editor."""
         return self.editor
+    
+    def __str__(self) -> str:
+        return f"{self.title} by {self.author}, published by {self.editor} on {self.parution_date}"
 
