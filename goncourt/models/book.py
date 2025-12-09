@@ -40,6 +40,14 @@ class Book():
     selection: Optional[int]
     voices: Optional[int]
 
+    def set_author(self, author: Author) -> None:
+        """Sets the author of the book."""
+        self.author = author
+
+    def set_editor(self, editor: Editor) -> None:
+        """Sets the editor of the book."""
+        self.editor = editor
+
     def get_author(self) -> Author:
         """Returns the book's author."""
         return self.author
