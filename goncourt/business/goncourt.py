@@ -13,7 +13,12 @@ from models.author import Author
 
 @dataclass
 class Goncourt:
-    """Business layer of the Goncourt application, implementing use cases and functional specifications."""
+    """Business layer of the Goncourt application, implementing use cases and functional specifications.
+    - books_1 : list of books from the first selection
+    - books_2 : list of books from the second selection
+    - books_3 : list of books from the third selection 
+    - authors : list of authors
+    """
 
     books_1: list[Book] = field(default_factory=list, init=False)
     books_2: list[Book] = field(default_factory=list, init=False)
@@ -48,26 +53,6 @@ class Goncourt:
         """Adds the author to the list of authors."""
         self.authors.append(author)
 
-    @staticmethod
-    def get_all_books() -> list[Book]:
-        book_dao: BookDao = BookDao()
-        return book_dao.read_all()
-
-    @staticmethod
-    def get_book_by_id(id_book: int) -> Optional[Book]:
-        book_dao: BookDao = BookDao()
-        return book_dao.read(id_book, book=None)
-
-    
-    def get_author_by_id(self, id_author: int) -> Optional[Author]:
-        author_dao: AuthorDao = AuthorDao()
-        return author_dao.read(id_author)
-       
-    @staticmethod
-    def set_book_selection(book: Book, selection: str) -> None:
-        """Sets the selection number of the book."""
-        book.selection = selection
-
     def add_book_to_selection(self, book: Book):
         """Adds the book to the selection in the database."""
         selection_dao: SelectionDao = SelectionDao()
@@ -78,3 +63,28 @@ class Goncourt:
         """Returns all books in a given selection."""
         selection_dao: SelectionDao = SelectionDao()
         return selection_dao.read_all_the_selection(selection)
+    
+    def get_author_by_id(self, id_author: int) -> Optional[Author]:
+        author_dao: AuthorDao = AuthorDao()
+        return author_dao.read(id_author)
+    
+    def get_all_juries(self) -> list:
+        from daos.jury_dao import JuryDao
+        jury_dao: JuryDao = JuryDao()
+        return jury_dao.read_all()
+    
+    def get_book_by_id(self, book_id: int) -> Optional[Book]:
+        book_dao: BookDao = BookDao()
+        return book_dao.read(book_id, book=None)
+
+    @staticmethod
+    def get_all_books() -> list[Book]:
+        book_dao: BookDao = BookDao()
+        return book_dao.read_all()
+
+    
+
+    @staticmethod
+    def set_book_selection(book: Book, selection: str) -> None:
+        """Sets the selection number of the book."""
+        book.selection = selection

@@ -130,7 +130,7 @@ class SelectionDao(Dao[Book]):
                 author=author,
                 editor=editor,
                 selection=record[f"{table_name}_id"],
-                voices=None
+                voices=0
             )
             book.book_id = record['book_id']
             books.append(book)
@@ -172,5 +172,4 @@ class SelectionDao(Dao[Book]):
                 return False
             
             return cursor.rowcount > 0
-        
         

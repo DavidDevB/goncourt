@@ -93,7 +93,7 @@ class BookDao(Dao[Book]):
                 author=author,
                 editor=editor,
                 selection=None,
-                voices=None,
+                voices=0,
             )
             book_to_get.book_id = record['book_id']
         else:
@@ -155,7 +155,7 @@ class BookDao(Dao[Book]):
                 author=author,
                 editor=editor,
                 selection=None,
-                voices=None,
+                voices=0,
             )
             book.book_id = record['book_id']
             books.append(book)

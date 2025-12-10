@@ -92,3 +92,4 @@ class JuryDao(Dao[Jury]):
             cursor.execute(sql, (obj.jury_id,))
             Dao.connection.commit()
             return cursor.rowcount > 0
+        

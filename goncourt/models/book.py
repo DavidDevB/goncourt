@@ -3,7 +3,6 @@
 Class Book
 """
 
-
 from dataclasses import dataclass, field
 from .author import Author
 from .editor import Editor
@@ -37,7 +36,7 @@ class Book():
     author: Author
     editor: Editor
     selection: Optional[str]
-    voices: Optional[int]
+    voices: int = 0
     book_id: Optional[int] = field(default=None, init=False)
 
     def set_author(self, author: Author) -> None:
@@ -64,8 +63,11 @@ class Book():
         """Returns the book's editor."""
         return self.editor
     
+    def add_voice(self) -> None:
+        """Increments the number of voices for the book by 1."""
+        self.voices += 1
+    
     def __str__(self) -> str:
-        return (f"{self.title} by {self.author}, published by {self.editor} on {self.parution_date}.\n"
+        return (f"{self.title} by {self.author}, published by {self.editor} on {self.parution_date}. Book ID: {self.book_id}\n"
                f"Summary: {self.summary}\nCharacters: {self.characters}\nPages: {self.pages}, ISBN: {self.isbn}, Price: {self.price}€\n"
                )
-

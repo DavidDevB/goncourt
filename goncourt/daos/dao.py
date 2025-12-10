@@ -53,10 +53,3 @@ class Dao[T](ABC):
         :return: True if the deletion could be performed
         """
         ...
-
-    # def __getitem__(self, id: int) -> Optional[T]:
-    #     """Allows to use the syntax dao[id] to read an entity by its id
-    #     :param id: id of the entity to read
-    #     :return: the object corresponding to the entity whose id is id_entity
-    #     """
-    #     return self.read(id)
