@@ -241,64 +241,37 @@ def main() -> None:
                     print("Invalid choice. Please enter 'yes' or 'no'.")
             all_juries_from_second.append(jury_name)
         
-        all_juries_from_third = []
-        while len(all_juries_from_third) < 10:
-            print("--------------------------------")
-            for jury in goncourt.get_all_juries():
-                print(f"Jury Member: {jury}")
-            jury_name = input("Choose your jury member from the list above by entering his full name: ").strip()
-            if not any(j.__str__() == jury_name for j in goncourt.get_all_juries()):
-                print("This jury member does not exist. Please choose a valid jury member from the list.")
-                continue
-            if any(j == jury_name for j in all_juries_from_third):
-                print("This jury member has already voted. Please choose another one.")
-                continue
-            print("--------------------------------")
-            print(f"Welcome {jury_name}!")
-            print("You can now vote for your favorite book from the third selection.")
-            print("--------------------------------")
-            while True:
-                choice = input("Do you want to vote for a book? (yes/no):").strip().lower()
-                if choice == "yes":
-                    print("Here are the books from the third selection:")
-                    print("--------------------------------")
-                    third_selection_books = goncourt.get_books_from_selection("third")
-                    for book in third_selection_books:
-                        print(book.__str__())
-                        print("\n")
-                    vote = int(input("Enter the book ID you want to vote for: "))
-                    voted_book = None
-                    # Vérifie que le livre a déjà été voté dans cette session
-                    # Si oui, utilise l'objet existant
-                    # Sinon, le récupère depuis la base de données
-                    # et l'ajoute à la liste des livres votés dans cette session
-                    # Enfin, incrémente le nombre de voix du livre
-                    for book in voted_books:
-                        if book.book_id == vote:
-                            voted_book = book
-                            break
+        print("Welcome to the last session of voting for the Goncourt 2025 winner!")
+        print("Here are the books from the third selection:")
+        print("--------------------------------")
+        third_selection_books = goncourt.get_books_from_selection("third")
+        for book in third_selection_books:
+            print(book.__str__())
+            print("\n")
+        first_book = goncourt.get_book_by_id(1)
+        if first_book is not None:
+            for i in range(6):
+                first_book.add_voice()
+        second_book = goncourt.get_book_by_id(2)
+        if second_book is not None:
+            for i in range(4):
+                second_book.add_voice()
+        print("The votes of the last selection were as follows:")
+        if first_book is not None:
+            print(f"{first_book.title} received {first_book.voices} voices.")
+        if second_book is not None:
+            print(f"{second_book.title} received {second_book.voices} voices.")
+        print("--------------------------------")
+        print("The Goncourt 2025 winner is:")
+        winner_book = goncourt.get_book_by_id(1)
+        if winner_book is not None:
+            print(winner_book.__str__())
+        print("--------------------------------")
+        print("Thank you all for your participation in the Goncourt 2025 voting process!")
 
-                    if voted_book is None:
-                        voted_book = goncourt.get_book_by_id(vote)
-                        if voted_book is not None:
-                            voted_books.append(voted_book)
-
-                    if voted_book is not None:
-                        voted_book.add_voice()
-                        print(f"✓ You have voted for {voted_book.title}. Thank you for your vote!")
-                    else:
-                        print("❌ Invalid book ID.")
-                elif choice == "no":
-                    print(f"Thank you {jury_name} for your participation!")
-                    break
-                else:
-                    print("Invalid choice. Please enter 'yes' or 'no'.")
-            all_juries_from_third.append(jury_name)
     else:
         print("Invalid choice. Please restart the program and choose a valid option.")
         
-
-
 
 if __name__ == "__main__":
     main()
