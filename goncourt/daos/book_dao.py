@@ -39,10 +39,10 @@ class BookDao(Dao[Book]):
             else:
                 return 0
             
-    def read(self, id_entity: int) -> Optional[Book]:
+    def read(self, id_entity: int, book: Optional[Book]) -> Optional[Book]:
         """Returns the object corresponding to the entity whose id is id_entity
            (or None if it could not be found)"""
-        book: Optional[Book]
+        book_to_get: Optional[Book]
 
         with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
@@ -82,7 +82,7 @@ class BookDao(Dao[Book]):
             )
             editor.editor_id = record['editor_id']
 
-            book = Book(
+            book_to_get = Book(
                 title=record["title"],
                 summary=record["summary"],
                 characters=record["characters"],
@@ -95,11 +95,11 @@ class BookDao(Dao[Book]):
                 selection=None,
                 voices=None,
             )
-            book.book_id = record['book_id']
+            book_to_get.book_id = record['book_id']
         else:
-            book = None
+            book_to_get = None
 
-        return book
+        return book_to_get
     
     def read_all(self) -> list[Book]:
         """ Returns all books from the database """

@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, Optional
 import pymysql.cursors
 from typing import TypeVar, Union
-from goncourt.models.book import Book
+from models.book import Book
 
 
 @dataclass
@@ -54,9 +54,9 @@ class Dao[T](ABC):
         """
         ...
 
-    def __getitem__(self, id: int) -> Optional[T]:
-        """Allows to use the syntax dao[id] to read an entity by its id
-        :param id: id of the entity to read
-        :return: the object corresponding to the entity whose id is id_entity
-        """
-        return self.read(id)
+    # def __getitem__(self, id: int) -> Optional[T]:
+    #     """Allows to use the syntax dao[id] to read an entity by its id
+    #     :param id: id of the entity to read
+    #     :return: the object corresponding to the entity whose id is id_entity
+    #     """
+    #     return self.read(id)

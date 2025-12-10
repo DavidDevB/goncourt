@@ -1,10 +1,10 @@
 
 from dataclasses import dataclass, field
 from typing import Optional
-from goncourt.daos.dao import Dao
-from goncourt.models.book import Book
-from goncourt.models.author import Author
-from goncourt.models.editor import Editor
+from daos.dao import Dao
+from models.book import Book
+from models.author import Author
+from models.editor import Editor
 import pymysql.cursors
 
 
@@ -23,7 +23,7 @@ class SelectionDao(Dao[Book]):
 
         with Dao.connection.cursor() as cursor:
             try:
-                sql = f"INSERT INTO {table_name} (book_id) VALUES (%s)"
+                sql = f"INSERT INTO {table_name} (fk_book_id) VALUES (%s)"
                 cursor.execute(sql, (obj.book_id,))
                 Dao.connection.commit()
 
@@ -49,7 +49,7 @@ class SelectionDao(Dao[Book]):
             with Dao.connection.cursor(pymysql.cursors.DictCursor) as cursor:
                 sql = f"""
                 SELECT * FROM {table_name}
-                INNER JOIN books ON books.book_id = (%s)_selection.book_id
+                INNER JOIN books ON books.book_id = {table_name}.book_id
                 WHERE first_selection_id=%s
                 """
                 cursor.execute(sql, (book.selection, id_entity,))
@@ -91,16 +91,20 @@ class SelectionDao(Dao[Book]):
                 b.price,
                 b.fk_author_id,
                 b.fk_editor_id,
-                s.selection_number,
+                s.{table_name}_id,
                 a.author_id,
-                a.author_name,
-                a.author_firstname
+                a.first_name,
+                a.last_name,
+                a.biography,
+                e.editor_id,
+                e.name
             FROM {table_name} s
-            INNER JOIN books b ON s.book_id = b.book_id
+            INNER JOIN books b ON s.fk_book_id = b.book_id
             INNER JOIN authors a ON b.fk_author_id = a.author_id
-            ORDER BY s.selection_number
+            INNER JOIN editors e ON b.fk_editor_id = e.editor_id
+            ORDER BY s.{table_name}_id
             """
-            cursor.execute(sql, (selection, selection,))
+            cursor.execute(sql, ())
             records = cursor.fetchall()
         for record in records:
 
@@ -125,7 +129,7 @@ class SelectionDao(Dao[Book]):
                 price=record["price"],
                 author=author,
                 editor=editor,
-                selection=record["selection_number"],
+                selection=record[f"{table_name}_id"],
                 voices=None
             )
             book.book_id = record['book_id']

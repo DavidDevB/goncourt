@@ -57,15 +57,25 @@ def main(choice: str) -> None:
             print(book.__str__())
             print("\n")
         print("--------------------------------")
-        print("See you on November 5th, 2025 to discover the Goncourt 2025 winner.")
+        print("See you on November 4th, 2025 to discover the Goncourt 2025 winner.")
         print("--------------------------------")
         print("\n")
         print("Welcome President of Goncourt!")
-        print("We are on November 5th, 2025 and the Goncourt 2025 winner has been revealed.")
-        winner_book = Goncourt.get_book_by_id(1)
+        print("We are on November 4th, 2025 and the Goncourt 2025 winner has been revealed.")
+        winner_book = goncourt.get_book_by_id(1)
         print("Here is the Goncourt 2025 winning book:")
         if winner_book is not None:
             print(winner_book.__str__())
+        print("--------------------------------")
+        print("The votes of the last selection were as follows:")
+        book1 = goncourt.get_book_by_id(1)
+        if book1 is not None:
+            book1.voices = 6
+            print(f"{book1.title} received {book1.voices} voices.")
+        book2 = goncourt.get_book_by_id(2)
+        if book2 is not None:
+            book2.voices = 4
+            print(f"{book2.title} received {book2.voices} voices.")
 
     elif choice == 'user':
         goncourt = Goncourt()
