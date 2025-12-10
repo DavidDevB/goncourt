@@ -15,21 +15,39 @@ from models.author import Author
 class Goncourt:
     """Business layer of the Goncourt application, implementing use cases and functional specifications."""
 
-    def get_author_by_id(self, id_author: int) -> Optional[Author]:
-        author_dao: AuthorDao = AuthorDao()
-        return author_dao.read(id_author)
-    
-    def add_book_to_selection(self, book: Book):
-        """Adds the book to the selection in the database."""
-        selection_dao: SelectionDao = SelectionDao()
-        if book.selection is not None:
-            selection_dao.create(book)
+    books_1: list[Book] = field(default_factory=list, init=False)
+    books_2: list[Book] = field(default_factory=list, init=False)
+    books_3: list[Book] = field(default_factory=list, init=False)
+    authors: list[Author] = field(default_factory=list, init=False)
 
-    def get_books_from_selection(self, selection: str) -> list[Book]:
-        """Returns all books in a given selection."""
-        selection_dao: SelectionDao = SelectionDao()
-        return selection_dao.read_all_the_selection(selection)
-    
+    def add_book_to_books_1(self, book: Book) -> None:
+        """Adds the book to the list of books."""
+        self.books_1.append(book)
+
+    def get_books_from_books_1(self) -> list[Book]:
+        """Returns the list of books."""
+        return self.books_1
+
+    def add_book_to_books_2(self, book: Book) -> None:
+        """Adds the book to the list of books."""
+        self.books_2.append(book)
+
+    def get_books_from_books_2(self) -> list[Book]:
+        """Returns the list of books."""
+        return self.books_2
+
+    def add_book_to_books_3(self, book: Book) -> None:
+        """Adds the book to the list of books."""
+        self.books_3.append(book)
+
+    def get_books_from_books_3(self) -> list[Book]:
+        """Returns the list of books."""
+        return self.books_3
+
+    def add_author(self, author: Author) -> None:
+        """Adds the author to the list of authors."""
+        self.authors.append(author)
+
     @staticmethod
     def get_all_books() -> list[Book]:
         book_dao: BookDao = BookDao()
@@ -40,9 +58,23 @@ class Goncourt:
         book_dao: BookDao = BookDao()
         return book_dao.read(id_book, book=None)
 
+    
+    def get_author_by_id(self, id_author: int) -> Optional[Author]:
+        author_dao: AuthorDao = AuthorDao()
+        return author_dao.read(id_author)
+       
     @staticmethod
     def set_book_selection(book: Book, selection: str) -> None:
         """Sets the selection number of the book."""
         book.selection = selection
 
-    
+    def add_book_to_selection(self, book: Book):
+        """Adds the book to the selection in the database."""
+        selection_dao: SelectionDao = SelectionDao()
+        if book.selection is not None:
+            selection_dao.create(book)
+
+    def get_books_from_selection(self, selection: str) -> list[Book]:
+        """Returns all books in a given selection."""
+        selection_dao: SelectionDao = SelectionDao()
+        return selection_dao.read_all_the_selection(selection)
