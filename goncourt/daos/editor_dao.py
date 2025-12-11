@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from daos.dao import Dao
 from models.editor import Editor
+from models.book import Book
 from typing import Optional
 import pymysql.cursors
 
@@ -32,7 +33,7 @@ class EditorDao(Dao[Editor]):
             else:
                 return 0
             
-    def read(self, id_entity: int) -> Optional[Editor]:
+    def read(self, id_entity: int, book: Optional[Book]) -> Optional[Editor]:
         """Returns the object corresponding to the entity whose id is id_entity
            (or None if it could not be found)"""
         editor: Optional[Editor]
